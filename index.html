@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VR Devaiah Enclave</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="site-map">
+      <section class="map-shell">
+        <div id="mapViewport" class="map-viewport" aria-label="Interactive plot map">
+          <div id="mapScene" class="map-scene">
+            <img
+              src="./layout-clean.png"
+              alt="VR Devaiah Enclave layout"
+              class="map-background-image"
+            />
+            <div id="mapCanvas" class="map-overlay"></div>
+          </div>
+        </div>
+
+        <div class="map-controls glass-panel" aria-label="Map controls">
+          <button id="zoomInButton" class="map-control-button" type="button" aria-label="Zoom in">+</button>
+          <button id="zoomOutButton" class="map-control-button" type="button" aria-label="Zoom out">−</button>
+          <button id="zoomResetButton" class="map-control-button map-control-button-wide" type="button">Reset</button>
+        </div>
+
+        <aside class="floating-filters glass-panel">
+          <div class="filters-head">
+            <p class="eyebrow">Filters</p>
+            <h2>Plot Finder</h2>
+            <p class="filters-project-name">VR Devaiah Enclave</p>
+          </div>
+
+          <label class="field">
+            <span>Search Plot Number</span>
+            <input id="searchInput" type="text" placeholder="Try 7 or 27" />
+          </label>
+
+          <label class="field">
+            <span>Status</span>
+            <select id="statusFilter">
+              <option value="all">All plots</option>
+              <option value="available">Available</option>
+              <option value="booked">Booked</option>
+              <option value="sold">Sold</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Size</span>
+            <select id="sizeFilter">
+              <option value="all">All sizes</option>
+              <option value="ODD">ODD</option>
+              <option value="9.14x12.19">30 x 40 ft</option>
+              <option value="9.14x9.14">30 x 30 ft</option>
+            </select>
+          </label>
+
+          <section class="inventory-card">
+            <p>Live Inventory</p>
+            <div class="inventory-grid">
+              <div>
+                <strong id="liveAvailable">0</strong>
+                <span>Available</span>
+              </div>
+              <div>
+                <strong id="liveBooked">0</strong>
+                <span>Booked</span>
+              </div>
+              <div>
+                <strong id="liveSold">0</strong>
+                <span>Sold</span>
+              </div>
+            </div>
+          </section>
+        </aside>
+
+        <aside class="floating-branding glass-panel">
+          <div class="branding-logos">
+            <div class="logo-tile logo-image-tile" id="brandAdminTrigger">
+              <img src="./brand-logo.png" alt="Paavani logo" class="brand-logo-image" />
+            </div>
+          </div>
+          <div class="branding-stats">
+            <div class="summary-stat summary-stat-featured">
+              <span>Available Units</span>
+              <strong id="availableCount">0</strong>
+            </div>
+            <div class="summary-stat">
+              <span>Project Scale</span>
+              <strong>1:600</strong>
+            </div>
+          </div>
+          <section class="legend compact-legend compact-legend-tight">
+            <h3>Legend</h3>
+            <ul>
+              <li><span class="legend-dot odd"></span> ODD plots</li>
+              <li><span class="legend-dot cyan"></span> 30 x 40 ft</li>
+              <li><span class="legend-dot yellow"></span> 30 x 30 ft</li>
+            </ul>
+          </section>
+          <div class="branding-actions hidden">
+            <button id="openAdminButton" class="secondary-button branding-button" type="button">
+              Admin Access
+            </button>
+          </div>
+        </aside>
+
+        <aside class="floating-selected glass-panel" id="selectedPanel">
+          <p class="eyebrow">Selected plot</p>
+          <div id="selectedContent" class="selected-empty">
+            Click any plot on the map to inspect its current details.
+          </div>
+        </aside>
+
+        <aside class="floating-compass glass-panel">
+          <div class="compass-ring">
+            <div class="compass-crosshair compass-crosshair-vertical"></div>
+            <div class="compass-crosshair compass-crosshair-horizontal"></div>
+            <span class="north">N</span>
+            <span class="east">E</span>
+            <span class="south">S</span>
+            <span class="west">W</span>
+            <div class="compass-star"></div>
+            <div class="compass-center"></div>
+            <div class="compass-needle"></div>
+          </div>
+        </aside>
+
+        <button id="contactButton" class="floating-contact" type="button">Contact Us</button>
+
+        <aside class="admin-drawer hidden" id="adminDrawer">
+          <div class="admin-drawer-card">
+            <div class="admin-drawer-head">
+              <div>
+                <p class="eyebrow">Admin</p>
+                <h3>Plot Controls</h3>
+              </div>
+              <button id="closeAdminButton" class="admin-close" type="button" aria-label="Close admin panel">×</button>
+            </div>
+
+            <div id="adminLocked">
+              <p class="admin-copy">Unlock editing with the server-managed admin password.</p>
+              <label class="field">
+                <span>Password</span>
+                <input id="adminPassword" type="password" placeholder="Enter admin password" />
+              </label>
+              <button id="adminLoginButton" class="primary-button admin-button" type="button">
+                Unlock
+              </button>
+            </div>
+
+            <div id="adminUnlocked" class="hidden">
+              <p class="admin-copy">Changes sync to the database for the selected plot, including plot facing.</p>
+              <label class="field">
+                <span>Choose Plot</span>
+                <input id="adminPlotSearch" list="adminPlotOptions" type="text" placeholder="Type or pick a plot number" />
+                <datalist id="adminPlotOptions"></datalist>
+              </label>
+              <label class="field">
+                <span>Status</span>
+                <select id="adminStatus">
+                  <option value="available">Available</option>
+                  <option value="booked">Booked</option>
+                  <option value="sold">Sold</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>Size</span>
+                <select id="adminSize">
+                  <option value="ODD">ODD</option>
+                  <option value="9.14x12.19">30 x 40 ft</option>
+                  <option value="9.14x9.14">30 x 30 ft</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>Facing</span>
+                <select id="adminFacing">
+                  <option value="North">North</option>
+                  <option value="South">South</option>
+                  <option value="East">East</option>
+                  <option value="West">West</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>Area (Sq Ft)</span>
+                <input id="adminArea" type="number" min="0" step="0.01" />
+              </label>
+              <div class="admin-actions">
+                <button id="adminSaveButton" class="primary-button" type="button">Save</button>
+                <button id="adminLogoutButton" class="secondary-button" type="button">Logout</button>
+              </div>
+            </div>
+
+            <p id="adminMessage" class="admin-message"></p>
+          </div>
+        </aside>
+
+        <div class="map-badge" id="mapBadge">Interactive master plan</div>
+      </section>
+    </main>
+
+    <div id="plotModal" class="modal hidden" aria-hidden="true">
+      <div class="modal-backdrop" data-close-modal="true"></div>
+      <div class="plot-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <button class="plot-card-close" id="modalCloseButton" aria-label="Close plot details">↩</button>
+
+        <div class="plot-card-grid">
+          <section class="plot-card-left">
+            <p class="plot-card-brand">VR Devaiah Enclave</p>
+            <div class="plot-number-box" id="modalNumberBox">Plot - 0</div>
+            <div id="modalStatus" class="plot-status-pill"></div>
+            <p class="plot-card-contact" id="plotContactText">
+              Contact details will be added here.
+            </p>
+          </section>
+
+          <section class="plot-card-middle">
+            <h2 id="modalTitle"></h2>
+            <div class="detail-pills" id="modalContent"></div>
+          </section>
+
+          <section class="plot-card-right">
+            <h3 id="modalFacingHeading">Facing NORTH</h3>
+            <div class="plot-card-summary">
+              <div class="summary-chip">
+                <span>Status</span>
+                <strong id="modalStatusInline">Available</strong>
+              </div>
+            </div>
+            <button id="contactInlineButton" class="primary-button plot-card-cta" type="button">
+              Contact Us
+            </button>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <button id="modalCloseAction" class="hidden" type="button">Close</button>
+
+    <script src="./script.js"></script>
+  </body>
+  </html>
