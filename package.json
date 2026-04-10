@@ -1,0 +1,5 @@
+{
+  "name": "vr-enclave",
+  "private": true,
+  "type": "module"
+}
